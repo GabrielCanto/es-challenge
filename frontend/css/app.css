@@ -1,0 +1,27 @@
+form {
+    width: 100%;
+}
+
+form div {
+    padding-bottom: 5px;
+}
+
+form label {
+    width: 120px;
+    display: inline-block;
+}
+
+form input[type="text"] {
+    width: 200px;
+}
+
+div.instructions {
+    padding: 10px;
+}
+
+#login_msg {
+    background-color: red;
+    color: white;
+    padding: 10px;
+    display: none;
+}
