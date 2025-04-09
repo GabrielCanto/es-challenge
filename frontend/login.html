@@ -1,30 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Employee Edit</title>
-<script type="text/javascript" src="js/api.js"></script>
-<script type="text/javascript" src="js/auth.js"></script>
-<link rel="stylesheet" href="css/app.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Login</title>
+    <link rel="stylesheet" href="/frontend/css/app.css">
 </head>
-
 <body>
-<div id="login_msg"></div>
-<div class="instructions">
-    Login Below
-</div>
-<form id="login_form" action="" method="POST">
-    <div>
-        <label for="username">Username</label>
-        <input id="username" type="text" name="username" value="">
-    </div>
-    <div>
-        <label for="password">Password</label>
-        <input id="password" type="password" name="password" value="">
-    </div>    
-    <div>
-        <input type="Submit" value="Submit">
-    </div>
-</form>
-</body>
+<div class="container">
+    <h1>Employee Login</h1>
+    <div id="error" class="error-message"></div>
 
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <button type="submit" class="btn">Login</button>
+    </form>
+
+    <div class="login-info">
+        <p>Demo Accounts:</p>
+        <ul>
+            <li><strong>Admin:</strong> admin@example.com / admin123</li>
+            <li><strong>Employee:</strong> john@example.com / password123</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is already logged in
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (user.id) {
+            window.location.href = '/frontend/employee_edit.html';
+        }
+
+        // Handle login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            fetch('/api.php?endpoint=login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password }),
+                credentials: 'include'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                        window.location.href = '/frontend/employee_edit.html';
+                    } else {
+                        document.getElementById('error').textContent = data.error || 'Login failed';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('error').textContent = 'Error: ' + error.message;
+                });
+        });
+    });
+</script>
+</body>
 </html>
